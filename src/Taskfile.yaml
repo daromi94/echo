@@ -1,0 +1,14 @@
+version: "3"
+
+tasks:
+  default:
+    cmd: task -a
+
+  clean:
+    cmd: ./gradlew clean
+
+  build:
+    cmd: ./gradlew build
+
+  run:
+    cmd: ./gradlew run
