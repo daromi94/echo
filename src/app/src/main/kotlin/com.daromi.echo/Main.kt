@@ -1,5 +1,9 @@
 package com.daromi.echo
 
+import com.daromi.echo.server.EchoServer
+
 fun main() {
-    println("Hello, World!")
+    val server = EchoServer.create(Environment.serverPort)
+
+    server.start()
 }
