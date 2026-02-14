@@ -14,7 +14,9 @@ repositories {
     mavenCentral()
 }
 
-dependencies {}
+dependencies {
+    implementation("io.netty:netty-all:4.2.10.Final")
+}
 
 application {
     mainClass = "com.daromi.echo.MainKt"
