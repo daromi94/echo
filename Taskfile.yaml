@@ -1,0 +1,10 @@
+version: "3"
+
+tasks:
+  default:
+    cmd: task -a
+
+  hit:
+    vars:
+      PORT: 8080
+    cmd: echo "hi" | socat - TCP:localhost:{{.PORT}}
