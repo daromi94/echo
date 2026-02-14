@@ -29,7 +29,7 @@ class TcpEchoServer private constructor(
                 .group(elg)
                 .channel(NioServerSocketChannel::class.java)
                 .handler(LoggingHandler(LogLevel.INFO))
-                .childHandler(EchoServerChannelInitializer(handler))
+                .childHandler(TcpEchoServerChannelInitializer(handler))
 
             val future = boostrap.bind(port).sync()
 
@@ -40,7 +40,7 @@ class TcpEchoServer private constructor(
     }
 }
 
-private class EchoServerChannelInitializer(
+private class TcpEchoServerChannelInitializer(
     val handler: EchoServerHandler,
 ) : ChannelInitializer<SocketChannel>() {
     override fun initChannel(ch: SocketChannel) {
