@@ -6,16 +6,16 @@ plugins {
 
 group = "com.daromi"
 
+kotlin {
+    jvmToolchain(24)
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {}
 
-kotlin {
-    jvmToolchain(24)
-}
-
 application {
-    mainClass = "$group.${rootProject.name}.MainKt"
+    mainClass = "com.daromi.echo.MainKt"
 }
