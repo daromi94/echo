@@ -1,9 +1,9 @@
 package com.daromi.echo
 
-import com.daromi.echo.server.EchoServer
+import com.daromi.echo.server.TcpEchoServer
 
 fun main() {
-    val server = EchoServer.create(Environment.serverPort)
+    val server = TcpEchoServer.create(Environment.serverPort)
 
     server.start()
 }

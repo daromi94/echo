@@ -6,14 +6,15 @@ import io.netty.channel.MultiThreadIoEventLoopGroup
 import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
-import java.net.InetSocketAddress
+import io.netty.handler.logging.LogLevel
+import io.netty.handler.logging.LoggingHandler
 
-class EchoServer private constructor(
+class TcpEchoServer private constructor(
     private val port: Int,
 ) {
     companion object {
         @JvmStatic
-        fun create(port: Int): EchoServer = EchoServer(port)
+        fun create(port: Int): TcpEchoServer = TcpEchoServer(port)
     }
 
     fun start() {
@@ -27,10 +28,10 @@ class EchoServer private constructor(
             boostrap
                 .group(elg)
                 .channel(NioServerSocketChannel::class.java)
-                .localAddress(InetSocketAddress(port))
+                .handler(LoggingHandler(LogLevel.INFO))
                 .childHandler(EchoServerChannelInitializer(handler))
 
-            val future = boostrap.bind().sync()
+            val future = boostrap.bind(port).sync()
 
             future.channel().closeFuture().sync()
         } finally {
