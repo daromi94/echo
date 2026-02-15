@@ -20,7 +20,7 @@ class TcpEchoServer private constructor(
     fun start() {
         val elg = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
 
-        val handler = EchoServerHandler()
+        val serverHandler = EchoServerHandler()
 
         try {
             val boostrap = ServerBootstrap()
@@ -28,8 +28,7 @@ class TcpEchoServer private constructor(
             boostrap
                 .group(elg)
                 .channel(NioServerSocketChannel::class.java)
-                .handler(LoggingHandler(LogLevel.INFO))
-                .childHandler(TcpEchoServerChannelInitializer(handler))
+                .childHandler(TcpEchoServerChannelInitializer(serverHandler))
 
             val future = boostrap.bind(port).sync()
 
@@ -41,9 +40,12 @@ class TcpEchoServer private constructor(
 }
 
 private class TcpEchoServerChannelInitializer(
-    val handler: EchoServerHandler,
+    val serverHandler: EchoServerHandler,
 ) : ChannelInitializer<SocketChannel>() {
     override fun initChannel(ch: SocketChannel) {
-        ch.pipeline().addLast(handler)
+        val pipeline = ch.pipeline()
+
+        pipeline.addLast(LoggingHandler(LogLevel.INFO))
+        pipeline.addLast(serverHandler)
     }
 }
