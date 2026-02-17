@@ -18,7 +18,8 @@ class TcpEchoServer private constructor(
     }
 
     fun start() {
-        val elg = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
+        val bossGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
+        val workerGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
 
         val serverHandler = EchoServerHandler()
 
@@ -26,7 +27,7 @@ class TcpEchoServer private constructor(
             val boostrap = ServerBootstrap()
 
             boostrap
-                .group(elg)
+                .group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel::class.java)
                 .childHandler(TcpEchoServerChannelInitializer(serverHandler))
 
@@ -34,7 +35,8 @@ class TcpEchoServer private constructor(
 
             future.channel().closeFuture().sync()
         } finally {
-            elg.shutdownGracefully().sync()
+            workerGroup.shutdownGracefully().sync()
+            bossGroup.shutdownGracefully().sync()
         }
     }
 }
