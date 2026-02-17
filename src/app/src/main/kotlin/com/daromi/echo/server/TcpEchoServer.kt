@@ -27,7 +27,7 @@ class TcpEchoServer private constructor(
     }
 
     fun start() {
-        val (handlerFactory, channelClass) =
+        val (ioHandlerFactory, channelClass) =
             when {
                 IoUring.isAvailable() -> {
                     IoUringIoHandler.newFactory() to IoUringServerSocketChannel::class.java
@@ -46,8 +46,8 @@ class TcpEchoServer private constructor(
                 }
             }
 
-        val bossGroup = MultiThreadIoEventLoopGroup(handlerFactory)
-        val workerGroup = MultiThreadIoEventLoopGroup(handlerFactory)
+        val bossGroup = MultiThreadIoEventLoopGroup(ioHandlerFactory)
+        val workerGroup = MultiThreadIoEventLoopGroup(ioHandlerFactory)
 
         val serverHandler = EchoServerHandler()
 

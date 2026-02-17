@@ -31,7 +31,7 @@ class UdsEchoServer private constructor(
     fun start() {
         File(socketPath).delete()
 
-        val (handlerFactory, channelClass) =
+        val (ioHandlerFactory, channelClass) =
             when {
                 IoUring.isAvailable() -> {
                     IoUringIoHandler.newFactory() to IoUringServerDomainSocketChannel::class.java
@@ -50,8 +50,8 @@ class UdsEchoServer private constructor(
                 }
             }
 
-        val bossGroup = MultiThreadIoEventLoopGroup(handlerFactory)
-        val workerGroup = MultiThreadIoEventLoopGroup(handlerFactory)
+        val bossGroup = MultiThreadIoEventLoopGroup(ioHandlerFactory)
+        val workerGroup = MultiThreadIoEventLoopGroup(ioHandlerFactory)
 
         val serverHandler = EchoServerHandler()
 
