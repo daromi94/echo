@@ -9,11 +9,13 @@ import io.netty.channel.epoll.EpollServerDomainSocketChannel
 import io.netty.channel.kqueue.KQueue
 import io.netty.channel.kqueue.KQueueIoHandler
 import io.netty.channel.kqueue.KQueueServerDomainSocketChannel
+import io.netty.channel.nio.NioIoHandler
+import io.netty.channel.socket.nio.NioServerDomainSocketChannel
 import io.netty.channel.unix.DomainSocketAddress
 import io.netty.channel.unix.DomainSocketChannel
 import io.netty.channel.uring.IoUring
 import io.netty.channel.uring.IoUringIoHandler
-import io.netty.channel.uring.IoUringServerSocketChannel
+import io.netty.channel.uring.IoUringServerDomainSocketChannel
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
 import java.io.File
@@ -32,7 +34,7 @@ class UdsEchoServer private constructor(
         val (handlerFactory, channelClass) =
             when {
                 IoUring.isAvailable() -> {
-                    IoUringIoHandler.newFactory() to IoUringServerSocketChannel::class.java
+                    IoUringIoHandler.newFactory() to IoUringServerDomainSocketChannel::class.java
                 }
 
                 Epoll.isAvailable() -> {
@@ -44,7 +46,7 @@ class UdsEchoServer private constructor(
                 }
 
                 else -> {
-                    throw IllegalStateException("Unsupported OS: UDS requires Epoll (Linux) or KQueue (macOS/BSD)")
+                    NioIoHandler.newFactory() to NioServerDomainSocketChannel::class.java
                 }
             }
 
