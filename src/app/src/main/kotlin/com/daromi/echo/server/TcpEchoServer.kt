@@ -3,6 +3,8 @@ package com.daromi.echo.server
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.MultiThreadIoEventLoopGroup
+import io.netty.channel.epoll.Epoll
+import io.netty.channel.epoll.EpollServerSocketChannel
 import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
@@ -28,8 +30,13 @@ class TcpEchoServer private constructor(
 
             boostrap
                 .group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel::class.java)
-                .childHandler(TcpEchoServerChannelInitializer(serverHandler))
+                .channel(
+                    if (Epoll.isAvailable()) {
+                        EpollServerSocketChannel::class.java
+                    } else {
+                        NioServerSocketChannel::class.java
+                    },
+                ).childHandler(TcpEchoServerChannelInitializer(serverHandler))
 
             val future = boostrap.bind(port).sync()
 
