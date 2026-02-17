@@ -4,7 +4,12 @@ tasks:
   default:
     cmd: task -a
 
-  hit:
+  tcp:connect:
     vars:
       PORT: 8080
-    cmd: echo "hi" | socat - TCP:localhost:{{.PORT}}
+    cmd: socat - TCP:localhost:{{.PORT}}
+
+  uds:connect:
+    vars:
+      SOCKET_PATH: /tmp/echo.sock
+    cmd: socat - UNIX-CONNECT:{{.SOCKET_PATH}}
