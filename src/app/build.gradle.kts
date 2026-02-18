@@ -4,8 +4,6 @@ plugins {
     application
 }
 
-group = "com.daromi"
-
 kotlin {
     jvmToolchain(24)
 }
